@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Trending Repos</string>
     <string name="search_title">Search</string>
+    <string name="check_internet">Please Check Your Internet Connection</string>
 </resources>

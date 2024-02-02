@@ -4,4 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="light_blue">#40A2E3</color>
     <color name="gray">#808080</color>
+    <color name="shimmerColor">#C2C2C2</color>
+    <color name="red">#FF0000</color>
+    <color name="dark_gray">#282832</color>
 </resources>
