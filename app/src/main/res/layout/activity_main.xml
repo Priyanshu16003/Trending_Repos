@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
@@ -38,7 +38,7 @@
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:paddingTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -47,8 +47,10 @@
         app:layout_constraintTop_toBottomOf="@+id/appbar">
 
         <ScrollView
+            android:id="@+id/scroll"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:visibility="visible">
 
             <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/shimmer_layout"
@@ -81,11 +83,15 @@
 
         </ScrollView>
 
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/repositories_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

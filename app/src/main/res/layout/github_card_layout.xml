@@ -9,6 +9,8 @@
     android:layout_marginRight="16dp">
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardView"
+        android:clickable="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -16,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:elevation="8dp"
-        android:backgroundTint="@color/dark_gray">
+        android:backgroundTint="@color/black">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
@@ -93,9 +95,10 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/more_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/description"
@@ -126,22 +129,22 @@
                     app:layout_constraintTop_toBottomOf="@+id/description" />
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView"
+                    android:id="@+id/color"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="8dp"
                     android:backgroundTint="@color/light_blue"
                     app:cardCornerRadius="20dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/topic"
-                    app:layout_constraintEnd_toStartOf="@+id/topic"
+                    app:layout_constraintBottom_toBottomOf="@+id/language"
+                    app:layout_constraintEnd_toStartOf="@+id/language"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/topic" />
+                    app:layout_constraintTop_toTopOf="@+id/language" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/topic"
+                    android:id="@+id/language"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
@@ -151,7 +154,7 @@
                     app:layout_constraintBaseline_toBaselineOf="@+id/star_count"
                     app:layout_constraintEnd_toStartOf="@+id/appCompatImageView"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/cardView" />
+                    app:layout_constraintStart_toEndOf="@+id/color" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/appCompatImageView"
@@ -163,7 +166,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/star_count"
                     app:layout_constraintEnd_toStartOf="@+id/star_count"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/topic"
+                    app:layout_constraintStart_toEndOf="@+id/language"
                     app:layout_constraintTop_toTopOf="@+id/star_count" />
 
                 <androidx.appcompat.widget.AppCompatTextView
