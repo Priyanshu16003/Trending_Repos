@@ -36,7 +36,6 @@ class MainActivity : AppCompatActivity() {
                     shimmer.visibility = View.GONE
                     scrollView.visibility = View.GONE
                     recyclerView.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
-
                     val adapter = GitHubRepoCardRecyclerViewAdapter(response)
 
                     recyclerView.adapter = adapter
