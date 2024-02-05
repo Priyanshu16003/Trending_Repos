@@ -20,8 +20,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="0dp">
 
@@ -31,7 +31,7 @@
                     android:layout_height="0dp"
                     android:layout_marginEnd="4dp"
                     android:src="@drawable/ic_trending"
-                    app:layout_constraintBottom_toTopOf="@+id/full_name"
+                    app:layout_constraintBottom_toTopOf="@+id/name"
                     app:layout_constraintEnd_toStartOf="@+id/stars_today"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -43,8 +43,8 @@
                     android:layout_marginEnd="102dp"
                     android:text="354 Stars today"
                     android:textColor="@color/white"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@+id/full_name"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toTopOf="@+id/name"
                     app:layout_constraintEnd_toStartOf="@+id/heart_icon"
                     app:layout_constraintStart_toEndOf="@+id/imageView"
                     app:layout_constraintTop_toTopOf="parent"
@@ -53,9 +53,9 @@
                 <ImageView
                     android:id="@+id/heart_icon"
                     android:layout_width="24dp"
-                    android:layout_height="0dp"
+                    android:layout_height="24dp"
                     android:src="@drawable/ic_heart"
-                    app:layout_constraintBottom_toTopOf="@+id/full_name"
+                    app:layout_constraintBottom_toTopOf="@+id/name"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/stars_today"
@@ -63,21 +63,52 @@
                     app:tint="@color/white" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/full_name"
+                    android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="Priyanshu / Trending Repo"
+                    android:text="Priyanshu"
+                    android:textColor="@color/light_blue"
+                    android:textSize="24sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/appCompatTextView"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/stars_today" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/appCompatTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:text="/"
+                    android:textColor="@color/light_blue"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/repo_name"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/name"
+                    app:layout_constraintTop_toBottomOf="@+id/stars_today" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/repo_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Trending Repo"
                     android:textColor="@color/light_blue"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/appCompatTextView"
                     app:layout_constraintTop_toBottomOf="@+id/stars_today" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -147,8 +178,8 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/appCompatImageView"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_marginEnd="8dp"
                     android:src="@drawable/ic_star"
                     android:tint="@color/white"
@@ -173,16 +204,16 @@
 
                 <ImageView
                     android:id="@+id/imageView3"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_marginEnd="8dp"
                     android:src="@drawable/ic_fork"
-                    app:tint="@color/white"
                     app:layout_constraintBottom_toBottomOf="@+id/fork_count"
                     app:layout_constraintEnd_toStartOf="@+id/fork_count"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/star_count"
-                    app:layout_constraintTop_toTopOf="@+id/fork_count" />
+                    app:layout_constraintTop_toTopOf="@+id/fork_count"
+                    app:tint="@color/white" />
 
                 <TextView
                     android:id="@+id/fork_count"

@@ -7,38 +7,49 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.trendingrepos.MainViewModel
+import com.example.trendingrepos.MainViewModelFactory
 import com.example.trendingrepos.R
+import com.example.trendingrepos.model.Contributor
 import com.example.trendingrepos.model.Repos
+import com.example.trendingrepos.networking.RetrofitInstance
+import com.example.trendingrepos.repository.GitHubProjectRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import retrofit2.Response
 
-class GitHubRepoCardRecyclerViewAdapter(private val response: Response<Repos>) : RecyclerView.Adapter<GitHubRepoCardRecyclerViewAdapter.ViewHolder>() {
+class GitHubRepoCardRecyclerViewAdapter(private val response: Repos) : RecyclerView.Adapter<GitHubRepoCardRecyclerViewAdapter.ViewHolder>() {
+
+    private var contributorsList: List<Contributor>? = null
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val cardView : CardView
         val moreDetails : ConstraintLayout
-        val fullName : TextView
+        val login : TextView
+        val repoName : TextView
         val description : TextView
         val contributorImageRecyclerView : RecyclerView
         val language : TextView
         val starCount : TextView
         val forkCount : TextView
+        val gitHubRepoApi = RetrofitInstance.trendingRepoApi
+        val repository = GitHubProjectRepository(gitHubRepoApi)
 
         init {
             cardView = view.findViewById(R.id.color)
             moreDetails = view.findViewById(R.id.more_details)
-            fullName = view.findViewById(R.id.full_name)
+            login = view.findViewById(R.id.name)
+            repoName = view.findViewById(R.id.repo_name)
             description = view.findViewById(R.id.description)
             contributorImageRecyclerView = view.findViewById(R.id.contributor_recycler_view)
             language = view.findViewById(R.id.language)
             starCount = view.findViewById(R.id.star_count)
             forkCount = view.findViewById(R.id.fork_count)
-
-            cardView.setOnClickListener {
-                moreDetails.visibility = View.VISIBLE
-            }
         }
-
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -48,17 +59,37 @@ class GitHubRepoCardRecyclerViewAdapter(private val response: Response<Repos>) :
     }
 
     override fun getItemCount(): Int {
-        return response.body()!!.items.size
+        return response.items.size
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+        viewHolder.login.text = response.items[position].owner.login
+        viewHolder.repoName.text = response.items[position].name
+        viewHolder.description.text = response.items[position].description
+        viewHolder.language.text = response.items[position].language
+        viewHolder.starCount.text = response.items[position].stargazers_count.toString()
+        viewHolder.forkCount.text = response.items[position].forks_count.toString()
 
-        Log.d("Mytag1",response.body()!!.items[0].toString())
-            viewHolder.fullName.text = response.body()!!.items[position].full_name
-            viewHolder.description.text = response.body()!!.items[position].description
-            viewHolder.language.text = response.body()!!.items[position].language
-            viewHolder.starCount.text = response.body()!!.items[position].stargazers_count.toString()
-            viewHolder.forkCount.text = response.body()!!.items[position].forks_count.toString()
+        response.items[position].owner.login?.let { login ->
+        response.items[position].name.let { repoName ->
+                GlobalScope.launch(Dispatchers.Main) {
+                    try {
+                        val response = RetrofitInstance.trendingRepoApi.getContributorsAvatar(login, repoName)
+                        if (response.isSuccessful) {
 
+                            Log.d("MyTag1",response.body().toString())
+                            contributorsList = response.body()
+                            val contributorAdapter =
+                                ContributorImageRecyclerViewAdapter(response)
+                            viewHolder.contributorImageRecyclerView.layoutManager = LinearLayoutManager(viewHolder.itemView.context,LinearLayoutManager.HORIZONTAL,false)
+                            viewHolder.contributorImageRecyclerView.adapter = contributorAdapter
+                        } else {
+                            Log.d("MyTag1",response.body().toString())
+                        }
+                    } catch (e: Exception) {
+                    }
+                }
+            }
+        }
     }
 }

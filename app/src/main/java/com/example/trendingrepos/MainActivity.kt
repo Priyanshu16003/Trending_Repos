@@ -6,44 +6,43 @@ import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.ScrollView
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.trendingrepos.adapters.GitHubRepoCardRecyclerViewAdapter
+import com.example.trendingrepos.databinding.ActivityMainBinding
 import com.example.trendingrepos.model.Repos
 import com.example.trendingrepos.networking.RetrofitInstance
+import com.example.trendingrepos.repository.GitHubProjectRepository
 import com.facebook.shimmer.ShimmerFrameLayout
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var response: Response<Repos>
+    private lateinit var binding : ActivityMainBinding
+    private lateinit var mainViewModel: MainViewModel
+    private lateinit var connectivityObserver: ConnectivityObserver
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        val shimmer = findViewById<ShimmerFrameLayout>(R.id.shimmer_layout)
-        val recyclerView = findViewById<RecyclerView>(R.id.repositories_recycler_view)
-        val scrollView = findViewById<ScrollView>(R.id.scroll)
-        shimmer.startShimmer()
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        lifecycleScope.launchWhenCreated{
-            Log.d("Mytag","here")
-            try {
-                response = RetrofitInstance.trendingRepoApi.getTrendingRepositories("score:1.0")
-                if (response.isSuccessful && response.body()!= null) {
-                    Log.d("Mytag", response.body().toString())
-                    shimmer.stopShimmer()
-                    shimmer.visibility = View.GONE
-                    scrollView.visibility = View.GONE
-                    recyclerView.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
-                    val adapter = GitHubRepoCardRecyclerViewAdapter(response)
+        connectivityObserver = NetworkConnectivityObserver(applicationContext)
 
-                    recyclerView.adapter = adapter
-                    Log.d("Nottag", response.body().toString())
-
-                }
-            }catch (e : Exception){
-                e.printStackTrace()
+        val gitHubRepoApi = RetrofitInstance.trendingRepoApi
+        val repository = GitHubProjectRepository(gitHubRepoApi)
+        mainViewModel = ViewModelProvider(this, MainViewModelFactory(repository)).get(MainViewModel::class.java)
+        mainViewModel.repos.observe(this) {
+            binding.shimmerLayout.startShimmer()
+            if(it != null){
+                binding.shimmerLayout.stopShimmer()
+                binding.shimmerLayout.visibility = View.GONE
+                binding.repositoriesRecyclerView.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
+                val adapter = GitHubRepoCardRecyclerViewAdapter(it)
+                binding.repositoriesRecyclerView.adapter = adapter
             }
         }
     }

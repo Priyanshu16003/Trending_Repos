@@ -26,6 +26,12 @@ android {
             )
         }
     }
+
+    buildFeatures{
+        viewBinding{
+            enable = true
+        }
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -54,5 +60,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     implementation("com.google.code.gson:gson:2.8.8")
+    implementation("io.coil-kt:coil:1.4.0")
+
 
 }
