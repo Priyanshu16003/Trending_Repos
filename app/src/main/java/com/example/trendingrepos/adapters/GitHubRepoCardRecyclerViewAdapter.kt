@@ -7,20 +7,15 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.trendingrepos.MainViewModel
-import com.example.trendingrepos.MainViewModelFactory
 import com.example.trendingrepos.R
 import com.example.trendingrepos.model.Contributor
 import com.example.trendingrepos.model.Repos
 import com.example.trendingrepos.networking.RetrofitInstance
-import com.example.trendingrepos.repository.GitHubProjectRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import retrofit2.Response
 
 class GitHubRepoCardRecyclerViewAdapter(private val response: Repos) : RecyclerView.Adapter<GitHubRepoCardRecyclerViewAdapter.ViewHolder>() {
 
@@ -37,7 +32,6 @@ class GitHubRepoCardRecyclerViewAdapter(private val response: Repos) : RecyclerV
         val starCount : TextView
         val forkCount : TextView
         val gitHubRepoApi = RetrofitInstance.trendingRepoApi
-        val repository = GitHubProjectRepository(gitHubRepoApi)
 
         init {
             cardView = view.findViewById(R.id.color)

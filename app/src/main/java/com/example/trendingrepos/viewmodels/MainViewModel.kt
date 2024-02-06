@@ -1,4 +1,4 @@
-package com.example.trendingrepos
+package com.example.trendingrepos.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
