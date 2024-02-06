@@ -2,10 +2,14 @@ package com.example.trendingrepos.utils
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.Network
 import android.net.NetworkCapabilities
 import android.os.Build
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 
 class NetworkUtils {
+
     companion object{
         fun isInternetAvailable(context: Context) : Boolean {
             (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).run {

@@ -32,6 +32,7 @@ class GitHubRepoCardRecyclerViewAdapter(private val response: Repos) : RecyclerV
         val starCount : TextView
         val forkCount : TextView
         val gitHubRepoApi = RetrofitInstance.trendingRepoApi
+        val color : CardView
 
         init {
             cardView = view.findViewById(R.id.color)
@@ -43,6 +44,7 @@ class GitHubRepoCardRecyclerViewAdapter(private val response: Repos) : RecyclerV
             language = view.findViewById(R.id.language)
             starCount = view.findViewById(R.id.star_count)
             forkCount = view.findViewById(R.id.fork_count)
+            color = view.findViewById(R.id.color)
         }
     }
 
@@ -64,14 +66,17 @@ class GitHubRepoCardRecyclerViewAdapter(private val response: Repos) : RecyclerV
         viewHolder.starCount.text = response.items[position].stargazers_count.toString()
         viewHolder.forkCount.text = response.items[position].forks_count.toString()
 
+        if(viewHolder.language == null){
+            viewHolder.language.visibility = View.GONE
+            viewHolder.color.visibility = View.GONE
+        }
+
         response.items[position].owner.login?.let { login ->
         response.items[position].name.let { repoName ->
                 GlobalScope.launch(Dispatchers.Main) {
                     try {
                         val response = RetrofitInstance.trendingRepoApi.getContributorsAvatar(login, repoName)
                         if (response.isSuccessful) {
-
-                            Log.d("MyTag1",response.body().toString())
                             contributorsList = response.body()
                             val contributorAdapter =
                                 ContributorImageRecyclerViewAdapter(response)

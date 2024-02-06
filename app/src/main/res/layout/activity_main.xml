@@ -10,7 +10,7 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/swipe_refresh"
+        app:layout_constraintBottom_toTopOf="@id/no_internet_fragment"
         app:liftOnScrollTargetViewId="@id/repositories_recycler_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,13 +44,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appbar">
+        app:layout_constraintTop_toBottomOf="@+id/no_internet_fragment">
 
-        <ScrollView
-            android:id="@+id/scroll"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="visible">
 
             <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/shimmer_layout"
@@ -62,26 +57,40 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <include layout="@layout/shimmer_view"/>
-                    <include layout="@layout/shimmer_view"/>
-                    <include layout="@layout/shimmer_view"/>
-                    <include layout="@layout/shimmer_view"/>
-                    <include layout="@layout/shimmer_view"/>
-                    <include layout="@layout/shimmer_view"/>
-                    <include layout="@layout/shimmer_view"/>
-                    <include layout="@layout/shimmer_view"/>
-                    <include layout="@layout/shimmer_view"/>
-                    <include layout="@layout/shimmer_view"/>
-                    <include layout="@layout/shimmer_view"/>
-                    <include layout="@layout/shimmer_view"/>
-                    <include layout="@layout/shimmer_view"/>
-                    <include layout="@layout/shimmer_view"/>
+                    <include layout="@layout/shimmer_view" />
 
+                    <include layout="@layout/shimmer_view" />
+
+                    <include layout="@layout/shimmer_view" />
+
+                    <include layout="@layout/shimmer_view" />
+
+                    <include layout="@layout/shimmer_view" />
+
+                    <include layout="@layout/shimmer_view" />
+
+                    <include layout="@layout/shimmer_view" />
+
+                    <include layout="@layout/shimmer_view" />
+
+                    <include layout="@layout/shimmer_view" />
+
+                    <include layout="@layout/shimmer_view" />
+
+                    <include layout="@layout/shimmer_view" />
+
+                    <include layout="@layout/shimmer_view" />
+
+                    <include layout="@layout/shimmer_view" />
+
+                    <include layout="@layout/shimmer_view" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
-
             </com.facebook.shimmer.ShimmerFrameLayout>
 
-        </ScrollView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/demoRV"/>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -92,6 +101,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appbar" />
+        app:layout_constraintTop_toBottomOf="@+id/no_internet_fragment" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

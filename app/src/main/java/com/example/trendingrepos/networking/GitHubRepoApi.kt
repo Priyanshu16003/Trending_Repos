@@ -9,9 +9,8 @@ import retrofit2.http.Query
 
 interface GitHubRepoApi {
 
-    @GET("/search/repositories")
+    @GET("/search/repositories?q=%7Bquery%7D&sort=stars")
     suspend fun getTrendingRepositories(
-        @Query("q") query: String
     ) : Response<Repos>
 
     @GET("/repos/{login}/{name}/contributors")
