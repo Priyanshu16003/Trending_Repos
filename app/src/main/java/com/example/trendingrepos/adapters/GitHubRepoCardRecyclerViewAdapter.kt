@@ -1,6 +1,5 @@
 package com.example.trendingrepos.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,12 +16,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class GitHubRepoCardRecyclerViewAdapter(private val response: Repos) : RecyclerView.Adapter<GitHubRepoCardRecyclerViewAdapter.ViewHolder>() {
+class GitHubRepoCardRecyclerViewAdapter(private val response: Repos?) : RecyclerView.Adapter<GitHubRepoCardRecyclerViewAdapter.ViewHolder>() {
 
     private var contributorsList: List<Contributor>? = null
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val cardView : CardView
         val moreDetails : ConstraintLayout
         val login : TextView
         val repoName : TextView
@@ -31,11 +29,9 @@ class GitHubRepoCardRecyclerViewAdapter(private val response: Repos) : RecyclerV
         val language : TextView
         val starCount : TextView
         val forkCount : TextView
-        val gitHubRepoApi = RetrofitInstance.trendingRepoApi
         val color : CardView
 
         init {
-            cardView = view.findViewById(R.id.color)
             moreDetails = view.findViewById(R.id.more_details)
             login = view.findViewById(R.id.name)
             repoName = view.findViewById(R.id.repo_name)
@@ -55,23 +51,19 @@ class GitHubRepoCardRecyclerViewAdapter(private val response: Repos) : RecyclerV
     }
 
     override fun getItemCount(): Int {
-        return response.items.size
+        return response?.items?.size ?: 0
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        viewHolder.login.text = response.items[position].owner.login
+        viewHolder.login.text = response!!.items[position].owner.login
         viewHolder.repoName.text = response.items[position].name
         viewHolder.description.text = response.items[position].description
         viewHolder.language.text = response.items[position].language
         viewHolder.starCount.text = response.items[position].stargazers_count.toString()
         viewHolder.forkCount.text = response.items[position].forks_count.toString()
 
-        if(viewHolder.language == null){
-            viewHolder.language.visibility = View.GONE
-            viewHolder.color.visibility = View.GONE
-        }
 
-        response.items[position].owner.login?.let { login ->
+        response.items[position].owner.login.let { login ->
         response.items[position].name.let { repoName ->
                 GlobalScope.launch(Dispatchers.Main) {
                     try {
@@ -82,10 +74,9 @@ class GitHubRepoCardRecyclerViewAdapter(private val response: Repos) : RecyclerV
                                 ContributorImageRecyclerViewAdapter(response)
                             viewHolder.contributorImageRecyclerView.layoutManager = LinearLayoutManager(viewHolder.itemView.context,LinearLayoutManager.HORIZONTAL,false)
                             viewHolder.contributorImageRecyclerView.adapter = contributorAdapter
-                        } else {
-                            Log.d("MyTag1",response.body().toString())
                         }
                     } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
             }

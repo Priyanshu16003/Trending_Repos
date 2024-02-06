@@ -15,8 +15,10 @@ import com.example.trendingrepos.databinding.ActivityMainBinding
 import com.example.trendingrepos.factory.MainViewModelFactory
 import com.example.trendingrepos.fragments.NoInternetPopUpFragment
 import com.example.trendingrepos.fragments.NoInternetScreenFragment
-import com.example.trendingrepos.utils.NetworkUtils
+import com.example.trendingrepos.model.Repos
+import com.example.trendingrepos.utils.Resource
 import com.example.trendingrepos.viewmodels.MainViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -24,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
     private lateinit var mainViewModel: MainViewModel
     private lateinit var adapter: GitHubRepoCardRecyclerViewAdapter
+
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,52 +35,79 @@ class MainActivity : AppCompatActivity() {
 
         val repository = (application as TrendingRepoApplication).gitHubProjectRepository
         val networkConnectivityObserver = NetworkConnectivityObserver(this)
-        val noInternetPopUpFragment = NoInternetPopUpFragment()
 
-        lifecycleScope.launch {
+        observeNetworkChanges(networkConnectivityObserver)
+
+        mainViewModel = ViewModelProvider(this, MainViewModelFactory(repository))[MainViewModel::class.java]
+        mainViewModel.repos.observe(this) {
+            when(it){
+                is Resource.LOADING -> { showLoading()}
+                is Resource.SUCCESS -> {
+                    binding.swipeRefresh.isRefreshing = false
+                    hideLoading()
+                    showSuccessUI(it.data)
+                }
+                is Resource.ERROR -> {
+                    binding.swipeRefresh.isRefreshing = false
+                    hideLoading()
+                    showErrorUI(it.message)
+                }
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun observeNetworkChanges(networkConnectivityObserver: NetworkConnectivityObserver) {
+        lifecycleScope.launch(Dispatchers.Main) {
+            val noInternetPopUpFragment = NoInternetPopUpFragment()
             networkConnectivityObserver.observ()
-                .collect(){
+                .collect{
                     when(it){
-                        ConnectivityObserver.Status.Unavailable -> {
-                            Toast.makeText(applicationContext,"Unavailable", Toast.LENGTH_LONG).show()
-                            val noInternetScreenFragment = NoInternetScreenFragment()
-                            supportFragmentManager.beginTransaction()
-                                .replace(R.id.no_internet_fragment, noInternetScreenFragment)
-                                .commit()
-                        }
+                        ConnectivityObserver.Status.Unavailable -> {}
 
                         ConnectivityObserver.Status.Lost -> {
-                            Toast.makeText(applicationContext,"Lost", Toast.LENGTH_LONG).show()
+
                             supportFragmentManager.beginTransaction()
-                                .setCustomAnimations(R.anim.slide_in, R.anim.slide_out)
+                                .setCustomAnimations(R.anim.slide_in, R.anim.slide_out, R.anim.slide_in, R.anim.slide_out)
                                 .replace(R.id.no_internet_fragment, noInternetPopUpFragment)
                                 .commitNow()
                         }
 
                         ConnectivityObserver.Status.Available -> {
                             supportFragmentManager.beginTransaction()
-                                .setCustomAnimations(R.anim.slide_in, R.anim.slide_out)
                                 .remove(noInternetPopUpFragment)
-                                .commit()
+                                .commitNow()
                         }
 
                         ConnectivityObserver.Status.Losing -> { Toast.makeText(applicationContext,"Losing", Toast.LENGTH_LONG).show() }
-
                     }
                 }
         }
+    }
 
-        mainViewModel = ViewModelProvider(this, MainViewModelFactory(repository)).get(MainViewModel::class.java)
-        mainViewModel.repos.observe(this) {
-            binding.shimmerLayout.startShimmer()
-            if(it != null){
-                binding.shimmerLayout.stopShimmer()
-                binding.shimmerLayout.visibility = View.GONE
-                binding.repositoriesRecyclerView.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
-                adapter = GitHubRepoCardRecyclerViewAdapter(it)
-                binding.repositoriesRecyclerView.adapter = adapter
-            }
+    private fun showErrorUI(message: String?) {
+        val noInternetScreenFragment = NoInternetScreenFragment()
+        supportFragmentManager.beginTransaction()
+            .setCustomAnimations(R.anim.slide_in, R.anim.slide_out)
+            .replace(R.id.no_internet_fragment, noInternetScreenFragment)
+            .commitNow()
+    }
+
+    private fun showSuccessUI(response: Repos?) {
+        if(response != null){
+            binding.repositoriesRecyclerView.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
+            adapter = GitHubRepoCardRecyclerViewAdapter(response)
+            binding.repositoriesRecyclerView.adapter = adapter
         }
+    }
+
+    private fun hideLoading() {
+        binding.shimmerLayout.stopShimmer()
+        binding.shimmerLayout.visibility = View.GONE
+    }
+
+    private fun showLoading() {
+        binding.shimmerLayout.startShimmer()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
