@@ -2,6 +2,7 @@ package com.example.trendingrepos
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.Toast
@@ -16,6 +17,8 @@ import com.example.trendingrepos.factory.MainViewModelFactory
 import com.example.trendingrepos.fragments.NoInternetPopUpFragment
 import com.example.trendingrepos.fragments.NoInternetScreenFragment
 import com.example.trendingrepos.model.Repos
+import com.example.trendingrepos.utils.ConnectivityObserver
+import com.example.trendingrepos.utils.NetworkConnectivityObserver
 import com.example.trendingrepos.utils.Resource
 import com.example.trendingrepos.viewmodels.MainViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,11 +26,11 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var noInternetScreenFragment: NoInternetScreenFragment
     private lateinit var binding : ActivityMainBinding
     private lateinit var mainViewModel: MainViewModel
     private lateinit var adapter: GitHubRepoCardRecyclerViewAdapter
 
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -36,9 +39,14 @@ class MainActivity : AppCompatActivity() {
         val repository = (application as TrendingRepoApplication).gitHubProjectRepository
         val networkConnectivityObserver = NetworkConnectivityObserver(this)
 
-        observeNetworkChanges(networkConnectivityObserver)
+        noInternetScreenFragment = NoInternetScreenFragment()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            observeNetworkChanges(networkConnectivityObserver)
+        }
 
         mainViewModel = ViewModelProvider(this, MainViewModelFactory(repository))[MainViewModel::class.java]
+        mainViewModel.fetchTrendingRepos()
         mainViewModel.repos.observe(this) {
             when(it){
                 is Resource.LOADING -> { showLoading()}
@@ -74,8 +82,10 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         ConnectivityObserver.Status.Available -> {
+                            mainViewModel.fetchTrendingRepos()
                             supportFragmentManager.beginTransaction()
                                 .remove(noInternetPopUpFragment)
+                                .remove(noInternetScreenFragment)
                                 .commitNow()
                         }
 
@@ -86,7 +96,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showErrorUI(message: String?) {
-        val noInternetScreenFragment = NoInternetScreenFragment()
+        noInternetScreenFragment = NoInternetScreenFragment()
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.slide_in, R.anim.slide_out)
             .replace(R.id.no_internet_fragment, noInternetScreenFragment)

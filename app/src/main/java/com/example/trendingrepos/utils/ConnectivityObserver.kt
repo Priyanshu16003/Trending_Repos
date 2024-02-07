@@ -1,4 +1,4 @@
-package com.example.trendingrepos
+package com.example.trendingrepos.utils
 
 import kotlinx.coroutines.flow.Flow
 

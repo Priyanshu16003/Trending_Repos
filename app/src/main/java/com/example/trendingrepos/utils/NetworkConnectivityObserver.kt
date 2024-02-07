@@ -1,10 +1,11 @@
-package com.example.trendingrepos
+package com.example.trendingrepos.utils
 
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.example.trendingrepos.utils.ConnectivityObserver
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
