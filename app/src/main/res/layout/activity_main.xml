@@ -10,96 +10,108 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/no_internet_fragment"
-        app:liftOnScrollTargetViewId="@id/repositories_recycler_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed">
+        app:liftOnScrollTargetViewId="@id/repositories_recycler_view">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:id="@+id/toolbar"
-                app:title="Trending"
-                app:titleTextColor="@color/white"
-                app:menu="@menu/option_menu"
-                android:background="@color/dark_gray"/>
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/dark_gray"
+            app:menu="@menu/option_menu"
+            app:title="Trending"
+            app:titleTextColor="@color/white" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/no_internet_fragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:elevation="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar"/>
+        app:layout_constraintTop_toBottomOf="@+id/appbar"
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:paddingTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/no_internet_fragment">
+        app:layout_constraintTop_toBottomOf="@+id/appbar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/shimmer_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.appcompat.widget.LinearLayoutCompat
+                <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent">
 
-                    <include layout="@layout/shimmer_view" />
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
-                    <include layout="@layout/shimmer_view" />
+                        <include layout="@layout/shimmer_view" />
 
-                    <include layout="@layout/shimmer_view" />
+                        <include layout="@layout/shimmer_view" />
 
-                    <include layout="@layout/shimmer_view" />
+                        <include layout="@layout/shimmer_view" />
 
-                    <include layout="@layout/shimmer_view" />
+                        <include layout="@layout/shimmer_view" />
 
-                    <include layout="@layout/shimmer_view" />
+                        <include layout="@layout/shimmer_view" />
 
-                    <include layout="@layout/shimmer_view" />
+                        <include layout="@layout/shimmer_view" />
 
-                    <include layout="@layout/shimmer_view" />
+                        <include layout="@layout/shimmer_view" />
 
-                    <include layout="@layout/shimmer_view" />
+                        <include layout="@layout/shimmer_view" />
 
-                    <include layout="@layout/shimmer_view" />
+                        <include layout="@layout/shimmer_view" />
 
-                    <include layout="@layout/shimmer_view" />
+                        <include layout="@layout/shimmer_view" />
 
-                    <include layout="@layout/shimmer_view" />
+                        <include layout="@layout/shimmer_view" />
 
-                    <include layout="@layout/shimmer_view" />
+                        <include layout="@layout/shimmer_view" />
 
-                    <include layout="@layout/shimmer_view" />
-                </androidx.appcompat.widget.LinearLayoutCompat>
+                        <include layout="@layout/shimmer_view" />
+
+                        <include layout="@layout/shimmer_view" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                </ScrollView>
+
             </com.facebook.shimmer.ShimmerFrameLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/demoRV"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/repositories_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/repositories_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/no_internet_fragment" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
