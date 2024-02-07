@@ -49,18 +49,26 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.fetchTrendingRepos()
         mainViewModel.repos.observe(this) {
             when(it){
-                is Resource.LOADING -> { showLoading()}
+                is Resource.LOADING -> {
+                    showLoading()
+                }
                 is Resource.SUCCESS -> {
+                    binding.swipeRefresh.isRefreshing = false
                     binding.swipeRefresh.isRefreshing = false
                     hideLoading()
                     showSuccessUI(it.data)
                 }
                 is Resource.ERROR -> {
                     binding.swipeRefresh.isRefreshing = false
+                    binding.swipeRefresh.isRefreshing = false
                     hideLoading()
                     showErrorUI(it.message)
                 }
             }
+        }
+
+        binding.swipeRefresh.setOnRefreshListener {
+            mainViewModel.fetchTrendingRepos()
         }
     }
 
