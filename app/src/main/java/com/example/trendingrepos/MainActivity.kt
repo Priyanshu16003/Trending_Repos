@@ -17,12 +17,16 @@ import com.example.trendingrepos.databinding.ActivityMainBinding
 import com.example.trendingrepos.factory.MainViewModelFactory
 import com.example.trendingrepos.fragments.NoInternetPopUpFragment
 import com.example.trendingrepos.fragments.NoInternetScreenFragment
+import com.example.trendingrepos.model.Contributor
 import com.example.trendingrepos.model.Repos
 import com.example.trendingrepos.utils.ConnectivityObserver
 import com.example.trendingrepos.utils.NetworkConnectivityObserver
 import com.example.trendingrepos.utils.Resource
 import com.example.trendingrepos.viewmodels.MainViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -116,9 +120,27 @@ class MainActivity : AppCompatActivity() {
 
     private fun showSuccessUI(response: Repos?) {
         if(response != null){
-            binding.repositoriesRecyclerView.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
-            adapter = GitHubRepoCardRecyclerViewAdapter(response)
-            binding.repositoriesRecyclerView.adapter = adapter
+            lifecycleScope.launch(Dispatchers.Main) {
+                var avtars: List<List<Contributor>> = getContributorAvtar(response)
+                binding.repositoriesRecyclerView.layoutManager =
+                    LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
+                adapter = GitHubRepoCardRecyclerViewAdapter(response, avtars)
+                binding.repositoriesRecyclerView.adapter = adapter
+            }
+        }
+    }
+
+    private suspend fun getContributorAvtar(response: Repos): List<List<Contributor>> {
+        return coroutineScope {
+            response.items.map { item ->
+                async {
+                    val login = item.owner.login
+                    val name = item.name
+                    mainViewModel.fetchContributorsAvtar(login, name)
+                    Log.d("Mytag","$login $name")
+                    return@async mainViewModel.contributorAvtar.value?.data ?: emptyList()
+                }
+            }.awaitAll()
         }
     }
 

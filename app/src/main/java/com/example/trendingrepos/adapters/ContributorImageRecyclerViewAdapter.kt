@@ -1,6 +1,5 @@
 package com.example.trendingrepos.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.trendingrepos.R
 import com.example.trendingrepos.model.Contributor
-import retrofit2.Response
 
-class ContributorImageRecyclerViewAdapter(val response: Response<List<Contributor>>?) : RecyclerView.Adapter<ContributorImageRecyclerViewAdapter.ViewHolder>() {
+class ContributorImageRecyclerViewAdapter(val response: List<Contributor>?) : RecyclerView.Adapter<ContributorImageRecyclerViewAdapter.ViewHolder>() {
     class ViewHolder(view : View) : RecyclerView.ViewHolder(view){
         val contributorImage : ImageView
 
@@ -35,11 +33,11 @@ class ContributorImageRecyclerViewAdapter(val response: Response<List<Contributo
     }
 
     override fun getItemCount(): Int {
-        return response?.body()!!.size
+        return response?.size ?: 0
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val contributorImageUrl = response?.body()?.get(position)?.avatar_url
+        val contributorImageUrl = response?.get(position)?.avatar_url
         holder.bindContributorImage(contributorImageUrl)
     }
 }

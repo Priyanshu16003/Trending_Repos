@@ -9,7 +9,6 @@ import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.trendingrepos.R
@@ -20,13 +19,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class GitHubRepoCardRecyclerViewAdapter(private val response: Repos?) : RecyclerView.Adapter<GitHubRepoCardRecyclerViewAdapter.ViewHolder>(), Filterable {
+class GitHubRepoCardRecyclerViewAdapter(
+    private val response: Repos?,
+    private val avtars: List<List<Contributor>>
+) : RecyclerView.Adapter<GitHubRepoCardRecyclerViewAdapter.ViewHolder>(), Filterable {
 
     private var contributorsList: List<Contributor>? = null
     private var filteredResponse : Repos? = response
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val moreDetails : ConstraintLayout
         val login : TextView
         val repoName : TextView
         val description : TextView
@@ -35,10 +36,13 @@ class GitHubRepoCardRecyclerViewAdapter(private val response: Repos?) : Recycler
         val starCount : TextView
         val forkCount : TextView
         val color : CardView
+        val starImage : ImageView
+        val forkImage : ImageView
         val heart : ImageView
         var isHeart : Boolean
+        val card : CardView
+        var isExpanded : Boolean
         init {
-            moreDetails = view.findViewById(R.id.more_details)
             login = view.findViewById(R.id.name)
             repoName = view.findViewById(R.id.repo_name)
             description = view.findViewById(R.id.description)
@@ -48,7 +52,11 @@ class GitHubRepoCardRecyclerViewAdapter(private val response: Repos?) : Recycler
             forkCount = view.findViewById(R.id.fork_count)
             color = view.findViewById(R.id.color)
             heart = view.findViewById(R.id.heart_icon)
+            starImage = view.findViewById(R.id.star_image)
+            forkImage = view.findViewById(R.id.fork_image)
             isHeart = false
+            card = view.findViewById(R.id.cardView)
+            isExpanded = false
         }
     }
 
@@ -69,6 +77,7 @@ class GitHubRepoCardRecyclerViewAdapter(private val response: Repos?) : Recycler
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
         val repos = filteredResponse?.items?.get(position)
+        val contributorAvtars : List<Contributor>? = avtars[position]
 
         viewHolder.login.text = repos?.owner?.login
         viewHolder.repoName.text = repos?.name
@@ -76,6 +85,33 @@ class GitHubRepoCardRecyclerViewAdapter(private val response: Repos?) : Recycler
         viewHolder.language.text = repos?.language
         viewHolder.starCount.text = repos?.stargazers_count.toString()
         viewHolder.forkCount.text = repos?.forks_count.toString()
+
+
+        val contributorAdapter =
+            ContributorImageRecyclerViewAdapter(contributorAvtars)
+        viewHolder.contributorImageRecyclerView.layoutManager = LinearLayoutManager(viewHolder.itemView.context,LinearLayoutManager.HORIZONTAL,false)
+        viewHolder.contributorImageRecyclerView.adapter = contributorAdapter
+
+        viewHolder.card.setOnClickListener {
+            if (viewHolder.isExpanded){
+                viewHolder.isExpanded = false
+                viewHolder.color.visibility = View.GONE
+                viewHolder.starImage.visibility = View.GONE
+                viewHolder.forkImage.visibility = View.GONE
+                viewHolder.language.visibility = View.GONE
+                viewHolder.starCount.visibility = View.GONE
+                viewHolder.forkCount.visibility = View.GONE
+            }
+            else{
+                viewHolder.isExpanded = false
+                viewHolder.color.visibility = View.VISIBLE
+                viewHolder.starImage.visibility = View.VISIBLE
+                viewHolder.forkImage.visibility = View.VISIBLE
+                viewHolder.language.visibility = View.VISIBLE
+                viewHolder.starCount.visibility = View.VISIBLE
+                viewHolder.forkCount.visibility = View.VISIBLE
+            }
+        }
 
         viewHolder.heart.setOnClickListener{
             if (!viewHolder.isHeart){
@@ -89,24 +125,24 @@ class GitHubRepoCardRecyclerViewAdapter(private val response: Repos?) : Recycler
         }
 
 
-        response!!.items[position].owner.login.let { login ->
-        response!!.items[position].name.let { repoName ->
-                GlobalScope.launch(Dispatchers.Main) {
-                    try {
-                        val response = RetrofitInstance.trendingRepoApi.getContributorsAvatar(login, repoName)
-                        if (response.isSuccessful) {
-                            contributorsList = response.body()
-                            val contributorAdapter =
-                                ContributorImageRecyclerViewAdapter(response)
-                            viewHolder.contributorImageRecyclerView.layoutManager = LinearLayoutManager(viewHolder.itemView.context,LinearLayoutManager.HORIZONTAL,false)
-                            viewHolder.contributorImageRecyclerView.adapter = contributorAdapter
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-        }
+//        response!!.items[position].owner.login.let { login ->
+//        response!!.items[position].name.let { repoName ->
+//                GlobalScope.launch(Dispatchers.Main) {
+//                    try {
+//                        val response = RetrofitInstance.trendingRepoApi.getContributorsAvatar(login, repoName)
+//                        if (response.isSuccessful) {
+//                            contributorsList = response.body()
+//                            val contributorAdapter =
+//                                ContributorImageRecyclerViewAdapter(response, position)
+//                            viewHolder.contributorImageRecyclerView.layoutManager = LinearLayoutManager(viewHolder.itemView.context,LinearLayoutManager.HORIZONTAL,false)
+//                            viewHolder.contributorImageRecyclerView.adapter = contributorAdapter
+//                        }
+//                    } catch (e: Exception) {
+//                        e.printStackTrace()
+//                    }
+//                }
+//            }
+//        }
     }
 
     override fun getFilter(): Filter {
@@ -127,7 +163,6 @@ class GitHubRepoCardRecyclerViewAdapter(private val response: Repos?) : Recycler
             }
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                Log.d("MyTag",results?.values.toString())
                 filteredResponse = results?.values as? Repos ?: Repos(items = emptyList())
                 notifyDataSetChanged()
             }
