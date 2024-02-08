@@ -1,8 +1,11 @@
 package com.example.trendingrepos.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -17,9 +20,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class GitHubRepoCardRecyclerViewAdapter(private val response: Repos?) : RecyclerView.Adapter<GitHubRepoCardRecyclerViewAdapter.ViewHolder>() {
+class GitHubRepoCardRecyclerViewAdapter(private val response: Repos?) : RecyclerView.Adapter<GitHubRepoCardRecyclerViewAdapter.ViewHolder>(), Filterable {
 
     private var contributorsList: List<Contributor>? = null
+    private var filteredResponse : Repos? = response
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val moreDetails : ConstraintLayout
@@ -59,16 +63,19 @@ class GitHubRepoCardRecyclerViewAdapter(private val response: Repos?) : Recycler
     }
 
     override fun getItemCount(): Int {
-        return response?.items?.size ?: 0
+        return filteredResponse?.items?.size ?: 0
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        viewHolder.login.text = response!!.items[position].owner.login
-        viewHolder.repoName.text = response.items[position].name
-        viewHolder.description.text = response.items[position].description
-        viewHolder.language.text = response.items[position].language
-        viewHolder.starCount.text = response.items[position].stargazers_count.toString()
-        viewHolder.forkCount.text = response.items[position].forks_count.toString()
+
+        val repos = filteredResponse?.items?.get(position)
+
+        viewHolder.login.text = repos?.owner?.login
+        viewHolder.repoName.text = repos?.name
+        viewHolder.description.text = repos?.description
+        viewHolder.language.text = repos?.language
+        viewHolder.starCount.text = repos?.stargazers_count.toString()
+        viewHolder.forkCount.text = repos?.forks_count.toString()
 
         viewHolder.heart.setOnClickListener{
             if (!viewHolder.isHeart){
@@ -82,8 +89,8 @@ class GitHubRepoCardRecyclerViewAdapter(private val response: Repos?) : Recycler
         }
 
 
-        response.items[position].owner.login.let { login ->
-        response.items[position].name.let { repoName ->
+        response!!.items[position].owner.login.let { login ->
+        response!!.items[position].name.let { repoName ->
                 GlobalScope.launch(Dispatchers.Main) {
                     try {
                         val response = RetrofitInstance.trendingRepoApi.getContributorsAvatar(login, repoName)
@@ -98,6 +105,31 @@ class GitHubRepoCardRecyclerViewAdapter(private val response: Repos?) : Recycler
                         e.printStackTrace()
                     }
                 }
+            }
+        }
+    }
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val charString = constraint.toString().toLowerCase().trim()
+                val filteredItems = if (charString.isEmpty()) {
+                    response!!.items
+                } else {
+                    response!!.items.filter {
+                        it.name.toLowerCase().contains(charString) || it.description.toLowerCase().contains(charString)
+                    }
+                }
+
+                val filterResults = FilterResults()
+                filterResults.values = Repos(items = filteredItems)
+                return filterResults
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                Log.d("MyTag",results?.values.toString())
+                filteredResponse = results?.values as? Repos ?: Repos(items = emptyList())
+                notifyDataSetChanged()
             }
         }
     }
