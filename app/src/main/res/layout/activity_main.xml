@@ -13,7 +13,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:liftOnScrollTargetViewId="@id/repositories_recycler_view">
+        app:liftOnScrollTargetViewId="@id/repositoriesRv">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -27,7 +27,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/no_internet_fragment"
+        android:id="@+id/noInternetFr"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:elevation="1dp"
@@ -38,7 +38,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh"
+        android:id="@+id/swRefresh"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -51,7 +51,7 @@
             android:layout_height="match_parent">
 
             <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/shimmer_layout"
+                android:id="@+id/shimmer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -102,7 +102,7 @@
             </com.facebook.shimmer.ShimmerFrameLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/repositories_recycler_view"
+                android:id="@+id/repositoriesRv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_constraintBottom_toBottomOf="parent"

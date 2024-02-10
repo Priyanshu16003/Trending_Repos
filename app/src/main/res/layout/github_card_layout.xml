@@ -23,59 +23,46 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp">
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_trending"
-            app:layout_constraintBottom_toBottomOf="@+id/stars_today"
-            app:layout_constraintEnd_toStartOf="@+id/stars_today"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/stars_today" />
-
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/stars_today"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_trending"
+            android:drawablePadding="8dp"
             android:text="354 Stars today"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/heart_icon"
+            android:textSize="20sp"
             app:layout_constraintEnd_toStartOf="@+id/heart_icon"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="@+id/heart_icon" />
-
-        <ImageView
-            android:id="@+id/heart_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:clickable="true"
-            android:src="@drawable/ic_heart"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/stars_today"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/name"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/heart_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:clickable="true"
+            app:srcCompat="@drawable/ic_heart"
+            app:layout_constraintBottom_toBottomOf="@+id/stars_today"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/stars_today"
+            app:layout_constraintTop_toTopOf="@+id/stars_today" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="Priyanshu"
             android:textColor="@color/light_blue"
-            android:textSize="24sp"
+            android:textSize="26sp"
             app:layout_constraintBottom_toTopOf="@+id/description"
             app:layout_constraintEnd_toStartOf="@+id/appCompatTextView"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView"
+            app:layout_constraintTop_toBottomOf="@+id/stars_today"
             app:layout_constraintVertical_bias="0.0" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -84,12 +71,12 @@
             android:layout_height="wrap_content"
             android:text="@string/slash"
             android:textColor="@color/light_blue"
-            android:textSize="24sp"
+            android:textSize="26sp"
             android:textStyle="bold"
-            app:layout_constraintBaseline_toBaselineOf="@+id/name"
+            app:layout_constraintBaseline_toBaselineOf="@+id/login"
             app:layout_constraintEnd_toStartOf="@+id/repo_name"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/name" />
+            app:layout_constraintStart_toEndOf="@+id/login" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/repo_name"
@@ -99,14 +86,14 @@
             android:maxLines="1"
             android:text="Trending Repo"
             android:textColor="@color/light_blue"
-            android:textSize="24sp"
+            android:textSize="26sp"
             android:textStyle="bold"
             app:layout_constraintBaseline_toBaselineOf="@+id/appCompatTextView"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/heart_icon"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/appCompatTextView" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -116,13 +103,13 @@
             android:text="adb shell am start -n com.example.trendingrepos/com.example.trendingrepos.MainActivity -a android.in"
             android:textColor="@color/gray"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/contributor_recycler_view"
+            app:layout_constraintBottom_toTopOf="@+id/contributorRv"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/name" />
+            app:layout_constraintTop_toBottomOf="@+id/login" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/contributor_recycler_view"
+            android:id="@+id/contributorRv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -132,86 +119,53 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/description" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/color"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_marginEnd="8dp"
-            android:backgroundTint="@color/light_blue"
-            app:cardCornerRadius="20dp"
-            app:layout_constraintBottom_toBottomOf="@+id/language"
-            app:layout_constraintEnd_toStartOf="@+id/language"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/language" />
-
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/language"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
+            android:drawableStart="@drawable/baseline_circle_24"
+            android:drawablePadding="8dp"
             android:text="Python"
             android:textColor="@color/gray"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@+id/star_image"
-            app:layout_constraintEnd_toStartOf="@+id/star_image"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/color"
-            app:layout_constraintTop_toTopOf="@+id/star_image" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/star_image"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_star"
-            android:tint="@color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/star_count"
+            android:textSize="16sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/star_count"
             app:layout_constraintEnd_toStartOf="@+id/star_count"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/language"
-            app:layout_constraintTop_toTopOf="@+id/star_count" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/star_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
+            android:drawableStart="@drawable/ic_star"
+            android:drawablePadding="8dp"
             android:text="542"
             android:textColor="@color/gray"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@+id/fork_image"
-            app:layout_constraintEnd_toStartOf="@+id/fork_image"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/star_image"
-            app:layout_constraintTop_toTopOf="@+id/fork_image" />
-
-        <ImageView
-            android:id="@+id/fork_image"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_fork"
-            app:layout_constraintBottom_toBottomOf="@+id/fork_count"
+            android:textSize="16sp"
+            app:drawableTint="@color/white"
+            app:layout_constraintBaseline_toBaselineOf="@+id/fork_count"
             app:layout_constraintEnd_toStartOf="@+id/fork_count"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/star_count"
-            app:layout_constraintTop_toTopOf="@+id/fork_count"
-            app:tint="@color/white" />
+            app:layout_constraintStart_toEndOf="@+id/language" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/fork_count"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_fork"
+            android:drawablePadding="8dp"
             android:text="1236"
             android:textColor="@color/gray"
-            android:textSize="14sp"
+            android:textSize="16sp"
+            app:drawableTint="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/fork_image"
-            app:layout_constraintTop_toBottomOf="@+id/contributor_recycler_view"
+            app:layout_constraintStart_toEndOf="@+id/star_count"
+            app:layout_constraintTop_toBottomOf="@+id/contributorRv"
             app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

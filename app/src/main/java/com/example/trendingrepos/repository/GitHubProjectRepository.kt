@@ -21,11 +21,8 @@ class GitHubProjectRepository(
 ) {
     private val repoListLiveData = MutableLiveData<Resource<Repos>>()
     private val contributorAvatarLivedata = MutableLiveData<Resource<List<Contributor>>>()
-    val repos : LiveData<Resource<Repos>>
-        get() = repoListLiveData
-
-    val contributorAvatar : LiveData<Resource<List<Contributor>>>
-        get() = contributorAvatarLivedata
+    val repos : LiveData<Resource<Repos>> get() = repoListLiveData
+    val contributorAvatar : LiveData<Resource<List<Contributor>>> get() = contributorAvatarLivedata
     suspend fun getTrendingRepos(){
         repoListLiveData.postValue(Resource.LOADING(null))
         if(NetworkUtils.isInternetAvailable(applicationContext)){

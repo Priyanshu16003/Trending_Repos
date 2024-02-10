@@ -2,7 +2,6 @@ package com.example.trendingrepos
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.View
 import androidx.appcompat.widget.SearchView
@@ -12,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.trendingrepos.adapters.GitHubRepoCardRecyclerViewAdapter
+import com.example.trendingrepos.adapters.RepositoryAdapter
 import com.example.trendingrepos.databinding.ActivityMainBinding
 import com.example.trendingrepos.factory.MainViewModelFactory
 import com.example.trendingrepos.fragments.NoInternetPopUpFragment
@@ -34,13 +33,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var noInternetScreenFragment: NoInternetScreenFragment
     private lateinit var binding : ActivityMainBinding
     private lateinit var mainViewModel: MainViewModel
-    private lateinit var adapter: GitHubRepoCardRecyclerViewAdapter
+    private lateinit var adapter: RepositoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setSupportActionBar(binding.toolbar)
 
         val repository = (application as TrendingRepoApplication).gitHubProjectRepository
@@ -51,30 +49,30 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             observeNetworkChanges(networkConnectivityObserver)
         }
-
         mainViewModel = ViewModelProvider(this, MainViewModelFactory(repository))[MainViewModel::class.java]
         mainViewModel.fetchTrendingRepos()
         mainViewModel.repos.observe(this) {
-            when(it){
+            when(it) {
                 is Resource.LOADING -> {
                     showLoading()
                 }
+
                 is Resource.SUCCESS -> {
-                    binding.swipeRefresh.isRefreshing = false
-                    binding.swipeRefresh.isRefreshing = false
+                    binding.swRefresh.isRefreshing = false
+                    binding.swRefresh.isRefreshing = false
                     hideLoading()
                     showSuccessUI(it.data)
                 }
+
                 is Resource.ERROR -> {
-                    binding.swipeRefresh.isRefreshing = false
-                    binding.swipeRefresh.isRefreshing = false
+                    binding.swRefresh.isRefreshing = false
+                    binding.swRefresh.isRefreshing = false
                     hideLoading()
                     showErrorUI(it.message)
                 }
             }
         }
-
-        binding.swipeRefresh.setOnRefreshListener {
+        binding.swRefresh.setOnRefreshListener {
             mainViewModel.fetchTrendingRepos()
         }
     }
@@ -84,15 +82,15 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.Main) {
             val noInternetPopUpFragment = NoInternetPopUpFragment()
             networkConnectivityObserver.observ()
-                .collect{
-                    when(it){
+                .collect {
+                    when(it) {
                         ConnectivityObserver.Status.Unavailable -> {}
 
                         ConnectivityObserver.Status.Lost -> {
 
                             supportFragmentManager.beginTransaction()
                                 .setCustomAnimations(R.anim.slide_in, R.anim.slide_out, R.anim.slide_in, R.anim.slide_out)
-                                .replace(R.id.no_internet_fragment, noInternetPopUpFragment)
+                                .replace(R.id.noInternetFr, noInternetPopUpFragment)
                                 .commitNow()
                         }
 
@@ -114,7 +112,7 @@ class MainActivity : AppCompatActivity() {
         noInternetScreenFragment = NoInternetScreenFragment()
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.slide_in, R.anim.slide_out)
-            .replace(R.id.no_internet_fragment, noInternetScreenFragment)
+            .replace(R.id.noInternetFr, noInternetScreenFragment)
             .commitNow()
     }
 
@@ -122,10 +120,15 @@ class MainActivity : AppCompatActivity() {
         if(response != null){
             lifecycleScope.launch(Dispatchers.Main) {
                 var avtars: List<List<Contributor>> = getContributorAvtar(response)
-                binding.repositoriesRecyclerView.layoutManager =
-                    LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
-                adapter = GitHubRepoCardRecyclerViewAdapter(response, avtars)
-                binding.repositoriesRecyclerView.adapter = adapter
+
+                binding.repositoriesRv.layoutManager =
+                    LinearLayoutManager(
+                        this@MainActivity,
+                        LinearLayoutManager.VERTICAL,
+                        false)
+
+                adapter = RepositoryAdapter(response, avtars)
+                binding.repositoriesRv.adapter = adapter
             }
         }
     }
@@ -137,7 +140,6 @@ class MainActivity : AppCompatActivity() {
                     val login = item.owner.login
                     val name = item.name
                     mainViewModel.fetchContributorsAvtar(login, name)
-                    Log.d("Mytag","$login $name")
                     return@async mainViewModel.contributorAvtar.value?.data ?: emptyList()
                 }
             }.awaitAll()
@@ -145,12 +147,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hideLoading() {
-        binding.shimmerLayout.stopShimmer()
-        binding.shimmerLayout.visibility = View.GONE
+        binding.shimmer.stopShimmer()
+        binding.shimmer.visibility = View.GONE
     }
 
     private fun showLoading() {
-        binding.shimmerLayout.startShimmer()
+        binding.shimmer.startShimmer()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

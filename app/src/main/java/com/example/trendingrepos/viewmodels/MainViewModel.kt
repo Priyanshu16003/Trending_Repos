@@ -16,10 +16,8 @@ class MainViewModel(private val repository: GitHubProjectRepository) : ViewModel
 
     private val _repos = repository.repos
     private val _contributorAvatar =repository.contributorAvatar
-    val repos : LiveData<Resource<Repos>>
-        get() = _repos
-    val contributorAvtar : LiveData<Resource<List<Contributor>>>
-        get() = _contributorAvatar
+    val repos : LiveData<Resource<Repos>> get() = _repos
+    val contributorAvtar : LiveData<Resource<List<Contributor>>> get() = _contributorAvatar
 
     fun fetchTrendingRepos(){
         viewModelScope.launch(Dispatchers.Main){
